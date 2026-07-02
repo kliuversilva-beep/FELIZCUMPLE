@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ti ❤️</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <canvas id="galaxyCanvas"></canvas>
+
+    <div class="contenedor-audio">
+        <audio id="musicaFondo" src="musicas/musica.mp3" loop></audio>
+        <button id="botonMusica">🎵 OFF</button>
+    </div>
+
+    <div class="Para_Ti" id="mensajeTexto">
+        <h1 id="textoTitulo"></h1>
+        <p id="textoSubtitulo"></p>
+    </div>
+
+    <div id="galeria-fotos">
+        <img src="imagenes/imag1.jpg" alt="Foto 1" class="foto-animada">
+        <img src="imagenes/imag2.jpg" alt="Foto 2" class="foto-animada">
+        <img src="imagenes/imag3.jpg" alt="Foto 3" class="foto-animada">
+        <img src="imagenes/imag4.jpg" alt="Foto 4" class="foto-animada">
+        <img src="imagenes/imag5.jpg" alt="Foto 5" class="foto-animada">
+        <img src="imagenes/imag6.jpg" alt="Foto 6" class="foto-animada">
+        <img src="imagenes/imag7.jpg" alt="Foto 7" class="foto-animada">
+        <img src="imagenes/imag8.jpg" alt="Foto 8" class="foto-animada">
+        <img src="imagenes/imag9.jpg" alt="Foto 9" class="foto-animada">
+        <img src="imagenes/imag10.jpg" alt="Foto 10" class="foto-animada">
+        <img src="imagenes/imag11.jpg" alt="Foto 11" class="foto-animada">
+        <img src="imagenes/imag12.jpg" alt="Foto 12" class="foto-animada">
+        <img src="imagenes/imag13.jpg" alt="Foto 13" class="foto-animada">
+        <img src="imagenes/imag14.jpg" alt="Foto 14" class="foto-animada">
+        <img src="imagenes/imag15.jpg" alt="Foto 15" class="foto-animada">
+        <img src="imagenes/imag16.jpg" alt="Foto 16" class="foto-animada">
+    </div>
+
+    <script>
+        const canvas = document.getElementById('galaxyCanvas');
+        const ctx = canvas.getContext('2d');
+        const mensajeTexto = document.getElementById('mensajeTexto');
+        const textoTitulo = document.getElementById('textoTitulo');
+        const textoSubtitulo = document.getElementById('textoSubtitulo');
+
+        const stringTitulo = "Minions..";
+        const stringSubtitulo = "FELIZ CUMPLEAÑOS..";
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const particles = [];
+        const particleCount = 700; 
+        const miniHearts = []; 
+        const backgroundHearts = []; 
+
+        function getHeartPoint(t) {
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+            const scale = window.innerWidth < 600 ? 12 : 15;
+            return { x: x * scale, y: -y * scale };
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            const t = Math.random() * Math.PI * 2;
+            const heartPos = getHeartPoint(t);
+            
+            particles.push({
+                startX: canvas.width / 2 + (Math.random() * 60 - 30), 
+                startY: canvas.height / 2 + (Math.random() * 60 - 30),
+                targetX: canvas.width / 2 + heartPos.x,
+                targetY: canvas.height / 2 + heartPos.y,
+                x: 0,
+                y: 0,
+                size: Math.random() * 2 + 1,
+                alpha: Math.random() * 0.5 + 0.5
+            });
+        }
+
+        const posicionesFinales = [
+            { xPct: 0.07, yPct: 0.10 }, { xPct: 0.24, yPct: 0.07 }, 
+            { xPct: 0.76, yPct: 0.07 }, { xPct: 0.93, yPct: 0.10 },
+            { xPct: 0.06, yPct: 0.32 }, { xPct: 0.22, yPct: 0.28 }, 
+            { xPct: 0.78, yPct: 0.28 }, { xPct: 0.94, yPct: 0.32 },
+            { xPct: 0.06, yPct: 0.68 }, { xPct: 0.22, yPct: 0.72 }, 
+            { xPct: 0.78, yPct: 0.72 }, { xPct: 0.94, yPct: 0.68 },
+            { xPct: 0.07, yPct: 0.90 }, { xPct: 0.24, yPct: 0.93 }, 
+            { xPct: 0.76, yPct: 0.93 }, { xPct: 0.93, yPct: 0.90 }
+        ];
+
+        const fotosData = [];
+        const imgElementos = document.querySelectorAll('.foto-animada');
+
+        imgElementos.forEach((img, index) => {
+            const pos = posicionesFinales[index];
+            fotosData.push({
+                elemento: img,
+                startX: canvas.width / 2, 
+                startY: canvas.height / 2,
+                targetX: canvas.width * pos.xPct, 
+                targetY: canvas.height * pos.yPct,
+                seed: Math.random() * 100
+            });
+        });
+
+        let timeElapsed = 0;
+        let running = false;
+        const coloresCorazones = ['#ff4b5c', '#ff6b8b', '#ff8da1', '#ffb6c1', '#e91e63'];
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (running) {
+                timeElapsed += 0.0166; 
+            }
+
+            if (Math.random() < 0.85) { 
+                backgroundHearts.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height + 20,
+                    size: Math.random() * 14 + 4,
+                    speedY: Math.random() * 1.8 + 0.6,
+                    speedX: Math.sin(Math.random() * Math.PI * 2) * 0.6,
+                    color: coloresCorazones[Math.floor(Math.random() * coloresCorazones.length)],
+                    alpha: Math.random() * 0.45 + 0.15, 
+                    fadeSpeed: 0.0015 + Math.random() * 0.0025
+                });
+            }
+
+            for (let i = backgroundHearts.length - 1; i >= 0; i--) {
+                const bh = backgroundHearts[i];
+                bh.y -= bh.speedY;
+                bh.x += bh.speedX;
+                bh.alpha -= bh.fadeSpeed;
+
+                if (bh.alpha <= 0 || bh.y < -20) {
+                    backgroundHearts.splice(i, 1);
+                    continue;
+                }
+
+                drawCanvasHeart(bh.x, bh.y, bh.size, bh.color, bh.alpha);
+            }
+
+            let progreso = Math.min(timeElapsed / 4.5, 1);
+            let factorSuave = 1 - Math.pow(1 - progreso, 3); 
+
+            particles.forEach((p, index) => {
+                p.x = p.startX + (p.targetX - p.startX) * factorSuave;
+                p.y = p.startY + (p.targetY - p.startY) * factorSuave;
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                
+                let brilloMod = progreso >= 1 ? (180 + Math.sin(timeElapsed * 5 + index) * 75) : 200;
+                ctx.fillStyle = `rgba(255, ${brilloMod}, 203, ${p.alpha * (0.3 + progreso * 0.7)})`;
+                
+                if (progreso >= 1) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = "#ff4b5c";
+                }
+                ctx.fill();
+                ctx.restore();
+            });
+
+            fotosData.forEach((f, index) => {
+                let currentX = f.startX + (f.targetX - f.startX) * factorSuave;
+                let currentY = f.startY + (f.targetY - f.startY) * factorSuave;
+
+                f.elemento.style.left = `${currentX}px`;
+                f.elemento.style.top = `${currentY}px`;
+
+                if (progreso < 1) {
+                    let escala = 0.12 + (0.88 * factorSuave);
+                    let rotarCamino = factorSuave * 360; 
+                    f.elemento.style.transform = `translate(-50%, -50%) scale(${escala}) rotate(${rotarCamino}deg)`;
+                    f.elemento.style.opacity = (0.2 + progreso * 0.8).toString();
+                } else {
+                    const desvíoY = Math.sin(timeElapsed * 2 + f.seed) * 8;      
+                    const desvíoX = Math.cos(timeElapsed * 1.5 + f.seed) * 6;    
+                    const rotación = Math.sin(timeElapsed * 1.2 + f.seed) * 5;    
+
+                    f.elemento.style.transform = `translate(calc(-50% + ${desvíoX}px), calc(-50% + ${desvíoY}px)) scale(1) rotate(${rotación}deg)`;
+                    f.elemento.style.opacity = "1";
+                }
+            });
+
+            if (running && timeElapsed < 4.5) {
+                mensajeTexto.classList.add('visible');
+                
+                let letrasTitulo = Math.floor(progreso * stringTitulo.length);
+                textoTitulo.textContent = stringTitulo.slice(0, letrasTitulo);
+
+                let letrasSubtitulo = Math.floor(progreso * stringSubtitulo.length);
+                textoSubtitulo.textContent = stringSubtitulo.slice(0, letrasSubtitulo);
+            }
+
+            if (timeElapsed >= 4.5) {
+                mensajeTexto.classList.add('visible');
+                
+                textoTitulo.textContent = stringTitulo;
+                textoSubtitulo.textContent = stringSubtitulo;
+
+                if (Math.random() < 0.65) { 
+                    miniHearts.push({
+                        x: canvas.width / 2 + (Math.random() * 120 - 60), 
+                        y: canvas.height / 2 + (Math.random() * 60 - 30),
+                        size: Math.random() * 15 + 5, 
+                        speedY: Math.random() * 2.5 + 0.8, 
+                        speedX: Math.sin(Math.random() * Math.PI) * 1.5, 
+                        color: coloresCorazones[Math.floor(Math.random() * coloresCorazones.length)],
+                        alpha: 1, 
+                        fadeSpeed: Math.random() * 0.01 + 0.003 
+                    });
+                }
+
+                for (let i = miniHearts.length - 1; i >= 0; i--) {
+                    const h = miniHearts[i];
+                    h.y -= h.speedY; 
+                    h.x += h.speedX; 
+                    h.alpha -= h.fadeSpeed; 
+
+                    if (h.alpha <= 0) {
+                        miniHearts.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = h.color;
+                    drawCanvasHeart(h.x, h.y, h.size, h.color, h.alpha);
+                    ctx.restore();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function drawCanvasHeart(x, y, size, color, alpha) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x, y + size / 4);
+            ctx.quadraticCurveTo(x, y, x + size / 2, y);
+            ctx.quadraticCurveTo(x + size, y, x + size, y + size / 3);
+            ctx.quadraticCurveTo(x + size, y + size * 2 / 3, x + size / 2, y + size);
+            ctx.quadraticCurveTo(x, y + size * 2 / 3, x, y + size / 3);
+            ctx.quadraticCurveTo(x, y, x, y + size / 4);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+
+        animate();
+
+        const audio = document.getElementById("musicaFondo");
+        const boton = document.getElementById("botonMusica");
+
+        function alternarMusica() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    boton.innerHTML = "⏸️ ON";
+                    boton.classList.add("activo");
+                    running = true; 
+                }).catch(err => console.log("Autoplay bloqueado."));
+            } else {
+                audio.pause();
+                boton.innerHTML = "🎵 OFF";
+                boton.classList.remove("activo");
+            }
+        }
+
+        boton.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            alternarMusica();
+        });
+
+        document.body.addEventListener('click', () => {
+            if (audio.paused) {
+                alternarMusica();
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>

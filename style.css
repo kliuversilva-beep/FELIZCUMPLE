@@ -1,0 +1,128 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #0d0008;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+}
+
+#galaxyCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.contenedor-audio {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 100;
+}
+
+#botonMusica {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: 1px solid rgba(255, 75, 92, 0.5);
+    padding: 5px 12px;       
+    font-size: 0.75rem;       
+    border-radius: 20px;     
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+#botonMusica:hover {
+    background-color: #ff4b5c;
+    border-color: #fff;
+    box-shadow: 0 0 10px #ff4b5c;
+}
+
+#botonMusica.activo {
+    border-color: #ff4b5c;
+    background-color: rgba(255, 75, 92, 0.2);
+}
+
+.Para_Ti {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+    
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.5s ease, visibility 1.5s ease;
+}
+
+.Para_Ti.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.Para_Ti h1 {
+    font-size: 3.5rem;
+    color: #ffffff;
+    text-shadow: 0 0 10px #ff4b5c, 0 0 30px #ff4b5c;
+    margin-bottom: 5px;
+}
+
+.Para_Ti p {
+    font-size: 1.2rem;
+    color: #ffb6c1;
+    opacity: 0.9;
+}
+
+.foto-animada {
+    position: absolute;
+    width: 80px;   
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 12px rgba(255, 75, 92, 0.4);
+    z-index: 5;
+    transform-origin: center;
+    transition: transform 0.1s ease-out, opacity 0.5s ease; 
+    
+    animation: latidoBrillante 2.5s ease-in-out infinite;
+}   
+
+@keyframes latidoBrillante {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(255, 75, 92, 0.6), 
+                    0 0 20px rgba(255, 75, 92, 0.3), 
+                    inset 0 0 8px rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.9);
+    }
+    50% {
+        box-shadow: 0 0 25px #ff4b5c, 
+                    0 0 40px #ff6b8b, 
+                    0 0 10px rgba(255, 255, 255, 0.5);
+        border-color: #ffffff;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .Para_Ti h1 {
+        font-size: 2.3rem;
+        text-shadow: 0 0 12px #ff4b5c;
+    }
+
+    .Para_Ti p {
+        font-size: 1rem;
+    }
+
+    .foto-animada {
+        width: 52px;
+        height: 52px;
+        border-radius: 6px; 
+    }
+}
